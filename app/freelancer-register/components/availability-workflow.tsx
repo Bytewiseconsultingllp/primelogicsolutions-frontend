@@ -144,7 +144,7 @@ export default function AvailabilityWorkflow({ data, onUpdate }: AvailabilityWor
                   min={5}
                   step={1}
                   onValueChange={handleSliderChange}
-                  className="w-full"
+                  className="w-full text-[#003087]"
                 />
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-500">5 hours</span>

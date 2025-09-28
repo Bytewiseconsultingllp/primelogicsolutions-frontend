@@ -1,12 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
-import { FileText, Shield, Upload } from "lucide-react"
+import { FileText, Shield, Upload, AlertCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 interface Agreement {
   id: string
@@ -17,6 +19,9 @@ interface IdentityVerification {
   idType: string
   taxDocType: string
   addressVerified: boolean
+  idDocument?: File | null
+  taxDocument?: File | null
+  addressDocument?: File | null
 }
 
 interface WorkAuthorization {
@@ -37,6 +42,11 @@ interface LegalAgreementsProps {
 
 export default function LegalAgreements({ data, freelancerName, onUpdate }: LegalAgreementsProps) {
   const [formData, setFormData] = useState<LegalAgreementsData>(data)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const idFileInputRef = useRef<HTMLInputElement>(null)
+  const taxFileInputRef = useRef<HTMLInputElement>(null)
+  const addressFileInputRef = useRef<HTMLInputElement>(null)
 
   // Initialize agreements only once when component mounts
   useEffect(() => {
@@ -83,7 +93,7 @@ export default function LegalAgreements({ data, freelancerName, onUpdate }: Lega
   }
 
   // Handle identity verification changes
-  const handleIdentityChange = (field: keyof IdentityVerification, value: string | boolean) => {
+  const handleIdentityChange = (field: keyof IdentityVerification, value: string | boolean | File | null) => {
     setFormData({
       ...formData,
       identityVerification: {
@@ -91,6 +101,14 @@ export default function LegalAgreements({ data, freelancerName, onUpdate }: Lega
         [field]: value,
       },
     })
+
+    // Clear error when a value is set
+    if (errors[field]) {
+      setErrors({
+        ...errors,
+        [field]: "",
+      })
+    }
   }
 
   // Handle work authorization changes
@@ -107,6 +125,36 @@ export default function LegalAgreements({ data, freelancerName, onUpdate }: Lega
   const isAgreementAccepted = (id: string) => {
     const agreement = formData.agreements.find((a) => a.id === id)
     return agreement ? agreement.accepted : false
+  }
+
+  // Validate file is PDF
+  const validatePdfFile = (file: File | null | undefined): boolean => {
+    if (!file) return false
+    return file.type === "application/pdf"
+  }
+
+  // Handle file upload
+  const handleFileUpload = (field: "idDocument" | "taxDocument" | "addressDocument", file: File | null) => {
+    if (file && !validatePdfFile(file)) {
+      setErrors({
+        ...errors,
+        [field]: "Only PDF files are accepted",
+      })
+      return
+    }
+
+    handleIdentityChange(field, file)
+
+    // Extract and process file data if needed
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        // Here you can process the file data if needed
+        console.log(`${field} data loaded and ready for processing`)
+        // You could parse PDF data here or send it to a server for processing
+      }
+      reader.readAsArrayBuffer(file)
+    }
   }
 
   // Get agreement title
@@ -155,6 +203,45 @@ export default function LegalAgreements({ data, freelancerName, onUpdate }: Lega
       default:
         return ""
     }
+  }
+
+  // Check if all required documents are uploaded
+  const areRequiredDocumentsUploaded = (): boolean => {
+    const { idType, taxDocType, addressVerified, idDocument, taxDocument, addressDocument } =
+      formData.identityVerification
+
+    const isIdDocumentRequired = idType !== ""
+    const isTaxDocumentRequired = taxDocType !== ""
+    const isAddressDocumentRequired = addressVerified
+
+    if (isIdDocumentRequired && !idDocument) return false
+    if (isTaxDocumentRequired && !taxDocument) return false
+    if (isAddressDocumentRequired && !addressDocument) return false
+
+    return true
+  }
+
+  // Validate form before submission
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {}
+
+    // Check ID document
+    if (formData.identityVerification.idType && !formData.identityVerification.idDocument) {
+      newErrors.idDocument = "ID document is required"
+    }
+
+    // Check tax document
+    if (formData.identityVerification.taxDocType && !formData.identityVerification.taxDocument) {
+      newErrors.taxDocument = "Tax document is required"
+    }
+
+    // Check address document
+    if (formData.identityVerification.addressVerified && !formData.identityVerification.addressDocument) {
+      newErrors.addressDocument = "Address verification document is required"
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
   return (
@@ -218,8 +305,12 @@ export default function LegalAgreements({ data, freelancerName, onUpdate }: Lega
             <CardContent>
               <div className="space-y-6">
                 <div className="space-y-3">
-                  <Label className="font-medium">Proof of Identity Submission</Label>
-                  <p className="text-sm text-gray-500">Upload any ONE of the following government-issued IDs:</p>
+                  <Label className="font-medium">
+                    Proof of Identity Submission <span className="text-red-500">*</span>
+                  </Label>
+                  <p className="text-sm text-gray-500">
+                    Upload any ONE of the following government-issued IDs (PDF only):
+                  </p>
                   <RadioGroup
                     value={formData.identityVerification.idType}
                     onValueChange={(value) => handleIdentityChange("idType", value)}
@@ -243,19 +334,85 @@ export default function LegalAgreements({ data, freelancerName, onUpdate }: Lega
                         Driver's License (with address)
                       </Label>
                     </div>
-                  </RadioGroup>
-                  <div className="mt-2 p-3 border border-dashed rounded-lg flex items-center justify-center">
-                    <div className="text-center">
-                      <Upload className="h-8 w-8 mx-auto text-gray-400" />
-                      <p className="text-sm text-gray-500 mt-2">Upload ID (Coming Soon)</p>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="utility-bill" id="id-utility" />
+                      <Label htmlFor="id-utility" className="cursor-pointer">
+                        Utility Bill (with address)
+                      </Label>
                     </div>
-                  </div>
+                  </RadioGroup>
+
+                  {formData.identityVerification.idType && (
+                    <div className="mt-2">
+                      <div
+                        className={`p-3 border ${errors.idDocument ? "border-red-300 bg-red-50" : "border-dashed"} rounded-lg`}
+                      >
+                        <div className="flex flex-col items-center justify-center">
+                          <input
+                            type="file"
+                            id="id-document-upload"
+                            ref={idFileInputRef}
+                            className="hidden"
+                            accept="application/pdf"
+                            onChange={(e) => handleFileUpload("idDocument", e.target.files?.[0] || null)}
+                          />
+                          {formData.identityVerification.idDocument ? (
+                            <div className="text-center">
+                              <FileText className="h-8 w-8 mx-auto text-green-500" />
+                              <p className="text-sm font-medium mt-2">
+                                {formData.identityVerification.idDocument.name}
+                              </p>
+                              <div className="flex gap-2 mt-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    if (idFileInputRef.current) {
+                                      idFileInputRef.current.click()
+                                    }
+                                  }}
+                                >
+                                  Replace
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => handleFileUpload("idDocument", null)}
+                                >
+                                  Remove
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-center">
+                              <Upload className="h-8 w-8 mx-auto text-gray-400" />
+                              <p className="text-sm text-gray-500 mt-2">Upload ID Document (PDF only)</p>
+                              <Button
+                                variant="outline"
+                                className="mt-2"
+                                onClick={() => {
+                                  if (idFileInputRef.current) {
+                                    idFileInputRef.current.click()
+                                  }
+                                }}
+                              >
+                                Select File
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {errors.idDocument && <p className="text-sm text-red-500 mt-1">{errors.idDocument}</p>}
+                    </div>
+                  )}
                 </div>
 
                 <Separator />
 
                 <div className="space-y-3">
-                  <Label className="font-medium">Tax Documentation</Label>
+                  <Label className="font-medium">
+                    Tax Documentation <span className="text-red-500">*</span>
+                  </Label>
                   <RadioGroup
                     value={formData.identityVerification.taxDocType}
                     onValueChange={(value) => handleIdentityChange("taxDocType", value)}
@@ -275,6 +432,70 @@ export default function LegalAgreements({ data, freelancerName, onUpdate }: Lega
                     </div>
                   </RadioGroup>
                   <p className="text-xs text-gray-500">Used for compliance with IRS / FATCA reporting.</p>
+
+                  {formData.identityVerification.taxDocType && (
+                    <div className="mt-2">
+                      <div
+                        className={`p-3 border ${errors.taxDocument ? "border-red-300 bg-red-50" : "border-dashed"} rounded-lg`}
+                      >
+                        <div className="flex flex-col items-center justify-center">
+                          <input
+                            type="file"
+                            id="tax-document-upload"
+                            ref={taxFileInputRef}
+                            className="hidden"
+                            accept="application/pdf"
+                            onChange={(e) => handleFileUpload("taxDocument", e.target.files?.[0] || null)}
+                          />
+                          {formData.identityVerification.taxDocument ? (
+                            <div className="text-center">
+                              <FileText className="h-8 w-8 mx-auto text-green-500" />
+                              <p className="text-sm font-medium mt-2">
+                                {formData.identityVerification.taxDocument.name}
+                              </p>
+                              <div className="flex gap-2 mt-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    if (taxFileInputRef.current) {
+                                      taxFileInputRef.current.click()
+                                    }
+                                  }}
+                                >
+                                  Replace
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => handleFileUpload("taxDocument", null)}
+                                >
+                                  Remove
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-center">
+                              <Upload className="h-8 w-8 mx-auto text-gray-400" />
+                              <p className="text-sm text-gray-500 mt-2">Upload Tax Document (PDF only)</p>
+                              <Button
+                                variant="outline"
+                                className="mt-2"
+                                onClick={() => {
+                                  if (taxFileInputRef.current) {
+                                    taxFileInputRef.current.click()
+                                  }
+                                }}
+                              >
+                                Select File
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {errors.taxDocument && <p className="text-sm text-red-500 mt-1">{errors.taxDocument}</p>}
+                    </div>
+                  )}
                 </div>
 
                 <Separator />
@@ -299,7 +520,78 @@ export default function LegalAgreements({ data, freelancerName, onUpdate }: Lega
                       </p>
                     </div>
                   </div>
+
+                  {formData.identityVerification.addressVerified && (
+                    <div className="mt-2 ml-7">
+                      <div
+                        className={`p-3 border ${errors.addressDocument ? "border-red-300 bg-red-50" : "border-dashed"} rounded-lg`}
+                      >
+                        <div className="flex flex-col items-center justify-center">
+                          <input
+                            type="file"
+                            id="address-document-upload"
+                            ref={addressFileInputRef}
+                            className="hidden"
+                            accept="application/pdf"
+                            onChange={(e) => handleFileUpload("addressDocument", e.target.files?.[0] || null)}
+                          />
+                          {formData.identityVerification.addressDocument ? (
+                            <div className="text-center">
+                              <FileText className="h-8 w-8 mx-auto text-green-500" />
+                              <p className="text-sm font-medium mt-2">
+                                {formData.identityVerification.addressDocument.name}
+                              </p>
+                              <div className="flex gap-2 mt-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    if (addressFileInputRef.current) {
+                                      addressFileInputRef.current.click()
+                                    }
+                                  }}
+                                >
+                                  Replace
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => handleFileUpload("addressDocument", null)}
+                                >
+                                  Remove
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-center">
+                              <Upload className="h-8 w-8 mx-auto text-gray-400" />
+                              <p className="text-sm text-gray-500 mt-2">Upload Address Document (PDF only)</p>
+                              <Button
+                                variant="outline"
+                                className="mt-2"
+                                onClick={() => {
+                                  if (addressFileInputRef.current) {
+                                    addressFileInputRef.current.click()
+                                  }
+                                }}
+                              >
+                                Select File
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {errors.addressDocument && <p className="text-sm text-red-500 mt-1">{errors.addressDocument}</p>}
+                    </div>
+                  )}
                 </div>
+
+                {!areRequiredDocumentsUploaded() && (
+                  <Alert variant="destructive" className="mt-4">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>Please upload all required documents before proceeding.</AlertDescription>
+                  </Alert>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -372,7 +664,8 @@ export default function LegalAgreements({ data, freelancerName, onUpdate }: Lega
                     checked={
                       formData.agreements.filter((a) => a.accepted).length === formData.agreements.length &&
                       formData.identityVerification.idType !== "" &&
-                      formData.identityVerification.taxDocType !== ""
+                      formData.identityVerification.taxDocType !== "" &&
+                      areRequiredDocumentsUploaded()
                     }
                     disabled
                     className="mt-1"
@@ -383,6 +676,23 @@ export default function LegalAgreements({ data, freelancerName, onUpdate }: Lega
                     clearance.
                   </Label>
                 </div>
+
+                <Button
+                  className="w-full mt-4"
+                  disabled={
+                    !areRequiredDocumentsUploaded() ||
+                    formData.agreements.filter((a) => a.accepted).length !== formData.agreements.length ||
+                    formData.identityVerification.idType === "" ||
+                    formData.identityVerification.taxDocType === ""
+                  }
+                  onClick={() => {
+                    if (validateForm()) {
+                      alert("All documents submitted successfully!")
+                    }
+                  }}
+                >
+                  Submit Documents
+                </Button>
               </div>
             </CardContent>
           </Card>

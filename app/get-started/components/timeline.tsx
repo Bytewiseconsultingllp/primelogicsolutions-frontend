@@ -149,9 +149,9 @@ export default function Timeline({ selectedTimeline = "standard", onUpdate }: Ti
                   <Badge
                     variant="outline"
                     className={cn(
-                      "border-amber-200",
-                      option.value === "standard" ? "bg-gray-50 text-gray-700" : "bg-amber-50 text-amber-700",
-                      option.value === "fast-track" && "bg-amber-100",
+                      "border-[#FF6B35]",
+                      option.value === "standard" ? "bg-gray-50 text-gray-700" : "bg-[#FF6B35] text-white",
+                      option.value === "fast-track" && "bg-[#FF6B35]",
                     )}
                   >
                     {option.rushFee}
@@ -164,14 +164,14 @@ export default function Timeline({ selectedTimeline = "standard", onUpdate }: Ti
         </div>
 
         {localSelectedTimeline !== "standard" && (
-          <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-md">
+          <div className="mt-4 p-4 bg-[#FF6B35] border border-[#FF6B35] rounded-md">
             <div className="flex items-start gap-2">
-              <div className="bg-amber-100 rounded-full p-1 mt-0.5">
-                <Check className="h-4 w-4 text-amber-700" />
+              <div className="bg-white rounded-full p-1 mt-0.5">
+                <Check className="h-4 w-4 text-[#FF6B35]" />
               </div>
               <div>
-                <p className="font-medium text-amber-800">You selected: {getSelectedOption.label}</p>
-                <p className="text-sm text-amber-700 mt-1">
+                <p className="font-medium text-white">You selected: {getSelectedOption.label}</p>
+                <p className="text-sm text-white mt-1">
                   {localSelectedTimeline === "fast-track"
                     ? "System adds VIP Tag internally — your project will get high-priority assignment with daily updates."
                     : "Your project will receive prioritized resource allocation based on your selected timeline."}

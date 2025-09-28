@@ -30,6 +30,14 @@ interface Section {
 }
 
 export interface Service {
+  challenges: never[]
+  techImperatives: never[]
+  businessNeeds: never[]
+  scamProtection: never[]
+  serviceCards: never[]
+  advantageCards: never[]
+  standardCards: never[]
+  ctaCards: never[]
   id: string
   title: string
   slug: string

@@ -162,17 +162,17 @@ export default function Appointment() {
               <ContactCard
                 icon={<Mail className="w-6 h-6 text-white" />}
                 title="WRITE A QUICK MAIL"
-                detail="b2b@dekoshurcrafts.com"
+                detail="support@primelogicsol.com"
               />
               <ContactCard
                 icon={<MapPin className="w-6 h-6 text-white" />}
-                title="VISIT OFFICE TO OFFICE HOURS"
+                title="OFFICE HOURS"
+                detail="Monday–Friday: 9:00 AM – 6:00 PM (EST) Saturday: By Appointment Only"
+              />
+              <ContactCard
+                icon={<MapPin className="w-6 h-6 text-white" />}
+                title="CORPORATE HEADQUARTERS"
                 detail="11166 Fairfax Blvd Ste 500, Fairfax, VA 22030"
-              />
-              <ContactCard
-                icon={<MapPin className="w-6 h-6 text-white" />}
-                title="VISIT GERMAN OFFICE"
-                detail="Kaiserbleek 4 Goslar"
               />
             </div>
           </motion.div>

@@ -11,10 +11,25 @@ interface ServiceAgreementProps {
     accepted: boolean
   }
   buyerName?: string
+  selectedServices?: Array<{
+    id: string
+    name: string
+    price: number
+    description?: string
+  }>
+  appliedDiscount?: number
+  totalPrice?: number
   onUpdate: (data: { accepted: boolean }) => void
 }
 
-export default function ServiceAgreement({ agreementData, buyerName = "", onUpdate }: ServiceAgreementProps) {
+export default function ServiceAgreement({
+  agreementData,
+  buyerName = "",
+  selectedServices = [],
+  appliedDiscount = 0,
+  totalPrice,
+  onUpdate,
+}: ServiceAgreementProps) {
   const [accepted, setAccepted] = useState(agreementData.accepted)
 
   const handleAcceptChange = (checked: boolean) => {
@@ -130,6 +145,61 @@ export default function ServiceAgreement({ agreementData, buyerName = "", onUpda
               arising from this agreement will be resolved through arbitration according to the rules of the American
               Arbitration Association.
             </p>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-base mb-2">11. PRICING AND SERVICES</h3>
+            <p>
+              The Client agrees to pay for the following services as outlined in the Estimate. All prices are in USD
+              unless otherwise specified.
+            </p>
+
+            {selectedServices && selectedServices.length > 0 ? (
+              <div className="mt-4 border rounded-md overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Service
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Price
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {selectedServices.map((service, index) => (
+                      <tr key={service.id || index}>
+                        <td className="px-4 py-3 text-sm text-gray-900">{service.name}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900 text-right">
+                          ${service.price.toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
+                    {appliedDiscount && appliedDiscount > 0 && (
+                      <tr>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900">Discount</td>
+                        <td className="px-4 py-3 text-sm font-medium text-green-600 text-right">-{appliedDiscount}%</td>
+                      </tr>
+                    )}
+                    <tr className="bg-gray-50">
+                      <td className="px-4 py-3 text-sm font-bold text-gray-900">Total</td>
+                      <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">
+                        ${totalPrice ? totalPrice.toLocaleString() : "To be determined"}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="mt-2 text-sm text-gray-500 italic">No services have been selected yet.</p>
+            )}
           </div>
         </div>
       </CardContent>

@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { ArrowRight, ArrowLeft, Check, ChevronDown, Menu, X } from "lucide-react"
+import { ArrowRight, ArrowLeft, Check, Menu, X } from "lucide-react"
 
 // Import all step components
 import RegisterYourself from "./components/register"
@@ -184,20 +184,30 @@ export default function GetStartedPage() {
     {
       number: 9,
       name: "Agreement",
-      component: <ServiceAgreement agreementData={{
-        accepted: false
-      }} onUpdate={function (data: { accepted: boolean }): void {
-        throw new Error("Function not implemented.")
-      } } />,
+      component: (
+        <ServiceAgreement
+          agreementData={{
+            accepted: false,
+          }}
+          onUpdate={(data: { accepted: boolean }): void => {
+            throw new Error("Function not implemented.")
+          }}
+        />
+      ),
       isValid: false, // Requires explicit acceptance
       requiredFields: [],
     },
     {
       number: 10,
       name: "Proceed Options",
-      component: <ProceedOptions projectData={undefined} onUpdate={function (data: { selectedOption: string | null; completed: boolean }): void {
-        throw new Error("Function not implemented.")
-      } } />,
+      component: (
+        <ProceedOptions
+          projectData={undefined}
+          onUpdate={(data: { selectedOption: string | null; completed: boolean }): void => {
+            throw new Error("Function not implemented.")
+          }}
+        />
+      ),
       isValid: false, // Requires selection and completion
       requiredFields: [],
     },
@@ -604,40 +614,11 @@ export default function GetStartedPage() {
                 <div className="relative">
                   <button
                     type="button"
-                    onClick={() => {
-                      if (currentStepIndex === 1) {
-                        goToPreviousStep()
-                      } else {
-                        setShowPreviousStepsDropdown(!showPreviousStepsDropdown)
-                      }
-                    }}
-                    className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                    onClick={goToPreviousStep}
+                    className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2 rounded-md bg-[#FF6B35] border border-gray-300 text-white  transition-colors"
                   >
-                    <ArrowLeft className="w-4 h-4 text-gray-500" /> Previous
-                    {currentStepIndex > 1 && <ChevronDown className="w-4 h-4 ml-1 text-gray-500" />}
+                    <ArrowLeft className="w-4 h-4 text-white" /> Previous
                   </button>
-
-                  {/* Previous steps dropdown */}
-                  {showPreviousStepsDropdown && currentStepIndex > 1 && (
-                    <div className="absolute left-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
-                      <ul className="py-1">
-                        {steps.slice(0, currentStepIndex).map((step, index) => (
-                          <li key={index}>
-                            <button
-                              type="button"
-                              onClick={() => goToStep(index)}
-                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-                            >
-                              <div className="w-5 h-5 rounded-full bg-[#FF6B35] text-white flex items-center justify-center mr-2 text-xs">
-                                <Check className="w-3 h-3" />
-                              </div>
-                              {step.name}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
                 </div>
               ) : (
                 <div></div> // Empty div to maintain layout when there's no "Previous" button

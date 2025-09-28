@@ -175,7 +175,7 @@ export default function IndustryDesign({ data, type, parentTitle }: Props) {
                 <ul className="space-y-4 ">
                   <li>
                     <Link
-                      href="/services/healthcare-life-sciences"
+                      href="/industries/tele-development"
                       className="flex items-center justify-between text-[#003087] bg-white hover:bg-[#003087] hover:text-[#FF6B35] p-4 rounded-md shadow-sm"
                     >
                       <span>Healthcare & Life Sciences</span>
@@ -184,25 +184,25 @@ export default function IndustryDesign({ data, type, parentTitle }: Props) {
                   </li>
                   <li>
                     <Link
-                      href="/services/fintech-banking"
+                      href="/industries/fintech-dev"
                       className="flex items-center justify-between text-gray-700 hover:text-[#FF6B35] p-4 transition-colors hover:bg-[#003087] rounded-md"
                     >
-                      <span>Fintech & Banking</span>
+                      <span>Financial Services & FinTech</span>
                       <ArrowRight size={16} />
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/services/ecommerce-retail"
+                      href="/industries/Document-dev"
                       className="flex items-center justify-between text-gray-700 hover:text-[#FF6B35] p-4 transition-colors hover:bg-[#003087] rounded-md"
                     >
-                      <span>E-commerce & Retail</span>
+                      <span>Legal, Accounting & Consulting</span>
                       <ArrowRight size={16} />
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/services/education-elearning"
+                      href="/industries/lms-development"
                       className="flex items-center justify-between text-gray-700 hover:text-[#FF6B35] p-4 transition-colors hover:bg-[#003087] rounded-md"
                     >
                       <span>Education & E-Learning</span>
@@ -211,10 +211,10 @@ export default function IndustryDesign({ data, type, parentTitle }: Props) {
                   </li>
                   <li>
                     <Link
-                      href="/services/manufacturing-logistics"
+                      href="/industries/saas-product-development"
                       className="flex items-center justify-between text-gray-700 hover:text-[#FF6B35] p-4 transition-colors hover:bg-[#003087] rounded-md"
                     >
-                      <span>Manufacturing & Logistics</span>
+                      <span>Technology, SaaS & Startups</span>
                       <ArrowRight size={16} />
                     </Link>
                   </li>
@@ -226,7 +226,7 @@ export default function IndustryDesign({ data, type, parentTitle }: Props) {
                 <p className="mb-6">Contact our customer support team if you have any questions.</p>
                 <div className="flex items-center space-x-3 mb-4">
                   <Phone size={20} className="text-[#FF6B35]" />
-                  <span>+1 800 123 4567</span>
+                  <span>+1 (916) 699-0091</span>
                 </div>
                 <div className="flex items-center space-x-3 mb-4">
                   <Mail size={20} className="text-[#FF6B35]" />
@@ -234,11 +234,11 @@ export default function IndustryDesign({ data, type, parentTitle }: Props) {
                 </div>
                 <div className="flex items-center space-x-3 mb-4">
                   <MapPin size={20} className="text-[#FF6B35]" />
-                  <span>123 Main Street, Anytown</span>
+                  <span>11166 Fairfax Blvd Ste 500, Fairfax, VA 22030</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Clock size={20} className="text-[#FF6B35]" />
-                  <span>Mon-Fri: 9:00 - 17:00</span>
+                  <span>Monday–Friday: 9:00 AM – 6:00 PM (EST)</span>
                 </div>
               </div>
 

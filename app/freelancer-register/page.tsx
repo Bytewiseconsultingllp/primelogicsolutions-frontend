@@ -504,6 +504,8 @@ export default function FreelancerRegisterPage() {
           />
         )
       default:
+        // Show a notification if the API is not available
+        alert("API is not available right now. Please try again later.")
         return null
     }
   }

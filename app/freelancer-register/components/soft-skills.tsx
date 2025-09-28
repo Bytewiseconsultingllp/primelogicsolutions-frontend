@@ -261,8 +261,8 @@ export default function SoftSkills({ data, onUpdate }: SoftSkillsProps) {
                       placeholder="Enter another language"
                     />
                   </div>
-                  <Button type="button" onClick={addOtherLanguage} disabled={!otherLanguage}>
-                    <Plus className="h-4 w-4 mr-2" /> Add
+                  <Button className="bg-[#FF6B35]" type="button" onClick={addOtherLanguage} disabled={!otherLanguage}>
+                    <Plus className="h-4 w-4 mr-2 bg-[#FF6B35]" /> Add
                   </Button>
                 </div>
 

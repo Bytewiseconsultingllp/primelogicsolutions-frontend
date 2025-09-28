@@ -205,7 +205,7 @@ ${generateIndustryConsiderations().replace(/\n/g, "\n")}
                 }}
                 className="mr-2 text-gray-500 hover:text-gray-700"
               >
-                <Edit className="w-4 h-4" />
+                
               </button>
             )}
             {expandedSections.overview ? (
@@ -262,7 +262,7 @@ ${generateIndustryConsiderations().replace(/\n/g, "\n")}
                 }}
                 className="mr-2 text-gray-500 hover:text-gray-700"
               >
-                <Edit className="w-4 h-4" />
+                
               </button>
             )}
             {expandedSections.scope ? (
@@ -319,7 +319,7 @@ ${generateIndustryConsiderations().replace(/\n/g, "\n")}
                 }}
                 className="mr-2 text-gray-500 hover:text-gray-700"
               >
-                <Edit className="w-4 h-4" />
+                
               </button>
             )}
             {expandedSections.technical ? (
@@ -376,7 +376,7 @@ ${generateIndustryConsiderations().replace(/\n/g, "\n")}
                 }}
                 className="mr-2 text-gray-500 hover:text-gray-700"
               >
-                <Edit className="w-4 h-4" />
+                
               </button>
             )}
             {expandedSections.industry ? (
@@ -417,14 +417,7 @@ ${generateIndustryConsiderations().replace(/\n/g, "\n")}
         )}
       </div>
 
-      <div className="mt-4 border-t border-gray-200 pt-4">
-        <button
-          onClick={downloadSoR}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#003087] text-white rounded-md hover:bg-[#002060] transition-colors"
-        >
-          <Download className="w-4 h-4" /> Download Statement of Requirements
-        </button>
-      </div>
+      
     </div>
   )
 }

@@ -270,7 +270,7 @@ export default function DomainExperience({ data, primaryDomain, onUpdate }: Doma
                     />
                   </div>
                 </div>
-                <Button onClick={addRole} disabled={!newRole.title || newRole.years <= 0} className="mt-2">
+                <Button onClick={addRole} disabled={!newRole.title || newRole.years <= 0} className="mt-2 bg-[#FF6B35] text-white">
                   <Plus className="h-4 w-4 mr-2" /> Add Role
                 </Button>
               </div>

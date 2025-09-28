@@ -19,7 +19,6 @@ export default function SpecialOffers({
   discountData = { discounts: [], appliedDiscount: 10 },
   onUpdate,
 }: SpecialOffersProps) {
-  // Discount options
   const [discountOptions, setDiscountOptions] = useState<DiscountOption[]>([
     { id: "startup", name: "Startup Founder", discount: 10, selected: true },
     { id: "veteran", name: "Veteran-Owned Business", discount: 15, selected: false },
@@ -30,59 +29,27 @@ export default function SpecialOffers({
   const [showDiscountMessage, setShowDiscountMessage] = useState(true)
   const [appliedDiscount, setAppliedDiscount] = useState<number>(discountData.appliedDiscount || 10)
 
-  // Remove the useEffect that was causing the loop
-
-  // Handle discount option selection
+  // ✅ Updated to allow only one selection at a time
   const handleDiscountSelection = (selectedId: string) => {
-    let updatedOptions
-    let newAppliedDiscount = appliedDiscount
-    let newShowDiscountMessage = showDiscountMessage
+    const selectedOption = discountOptions.find(option => option.id === selectedId)
+    if (!selectedOption) return
 
-    // If "Not Eligible" is selected, deselect all others
-    if (selectedId === "none") {
-      updatedOptions = discountOptions.map((option) => ({
-        ...option,
-        selected: option.id === "none",
-      }))
-      newAppliedDiscount = 0
-      newShowDiscountMessage = false
-    } else {
-      // Update the selected state of the options
-      updatedOptions = discountOptions.map((option) => {
-        // If this is the "Not Eligible" option, always deselect it when another option is selected
-        if (option.id === "none") {
-          return { ...option, selected: false }
-        }
+    const updatedOptions = discountOptions.map(option => ({
+      ...option,
+      selected: option.id === selectedId,
+    }))
 
-        // Toggle the selected option
-        if (option.id === selectedId) {
-          return { ...option, selected: !option.selected }
-        }
-
-        // Keep other options as they are
-        return option
-      })
-
-      // Calculate the highest applicable discount
-      const selectedOptions = updatedOptions.filter((option) => option.selected && option.id !== "none")
-      if (selectedOptions.length > 0) {
-        newAppliedDiscount = Math.max(...selectedOptions.map((option) => option.discount))
-        newShowDiscountMessage = true
-      } else {
-        newAppliedDiscount = 0
-        newShowDiscountMessage = false
-      }
-    }
+    const newAppliedDiscount = selectedOption.discount
+    const newShowDiscountMessage = selectedOption.discount > 0
 
     setDiscountOptions(updatedOptions)
     setAppliedDiscount(newAppliedDiscount)
     setShowDiscountMessage(newShowDiscountMessage)
 
-    // Call onUpdate with the new discount data
     if (onUpdate) {
       const selectedDiscounts = updatedOptions
-        .filter((option) => option.selected && option.id !== "none")
-        .map((option) => option.id)
+        .filter(option => option.selected && option.id !== "none")
+        .map(option => option.id)
 
       onUpdate({
         discounts: selectedDiscounts,
@@ -102,7 +69,7 @@ export default function SpecialOffers({
 
       {/* Discount options */}
       <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-4">Select all that apply:</h2>
+        <h2 className="text-lg font-semibold mb-4">Select one option:</h2>
 
         <div className="space-y-4">
           {discountOptions.map((option) => (

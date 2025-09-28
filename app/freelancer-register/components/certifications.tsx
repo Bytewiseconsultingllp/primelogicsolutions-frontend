@@ -237,12 +237,10 @@ export default function Certifications({ data, primaryDomain, onUpdate }: Certif
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <Button onClick={addCertificate} disabled={!newCertificate.name || !newCertificate.url}>
+                  <Button className="bg-[#FF6B35] text-white" onClick={addCertificate} disabled={!newCertificate.name || !newCertificate.url}>
                     <Plus className="h-4 w-4 mr-2" /> Add Certificate
                   </Button>
-                  <Button variant="outline" type="button" disabled>
-                    <Upload className="h-4 w-4 mr-2" /> Upload File (Coming Soon)
-                  </Button>
+                  
                 </div>
               </div>
 

@@ -93,7 +93,7 @@ export default function EnhancedSiteHeader() {
         <Link href="/" className="flex items-center relative z-10">
           {scrolled ? (
             <Image
-              src="/assets/logo.png" // Image for after scrolling
+              src="/assets/logo.jpg" // Image for after scrolling
               alt="Logo scrolled"
               width={120}
               height={120}
@@ -123,7 +123,7 @@ export default function EnhancedSiteHeader() {
               "transition-all duration-300",
               scrolled
                 ? "text-white border-white bg-inherit hover:bg-white/20"
-                : "text-black border-black bg-inherit hover:bg-primary hover:text-[#FF6B35]",
+                : "text-[#FF6B35] border-[#FF6B35] bg-inherit hover:bg-primary hover:text-white hover:bg-[#FF6B35] ",
             )}
             asChild
           >
@@ -136,7 +136,7 @@ export default function EnhancedSiteHeader() {
               "transition-all duration-300",
               scrolled
                 ? "text-white border-white bg-transparent hover:bg-white/20"
-                : "text-black border-black bg-transparent hover:bg-primary hover:text-[#FF6B35]",
+                : "text-white border-[#FF6B35] bg-transparent hover:bg-primary hover:text-white hover:bg-[#FF6B35]",
             )}
             asChild
           >

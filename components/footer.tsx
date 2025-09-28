@@ -90,30 +90,59 @@ export const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 mt-20 gap-6">
             {/* Craft Registry */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Services</h3>
+              <Link
+                href=""
+                className="text-white hover:text-[#FF6B35]"
+              >
+                <h3 className="text-lg font-semibold text-white mb-3">Services</h3>
+              </Link>
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    href="/services/software-development/web-development"
+                    href="/services/web-development"
                     className="text-white hover:text-[#FF6B35]"
                   >
-                    Web Development
+                    Software Development
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/services/software-development/mobile-development"
+                    href="/services/data-dev"
                     className="text-white hover:text-[#FF6B35]"
                   >
-                    Mobile Development
+                    Data and Analytics
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/services/software-development/game-development"
+                    href="/services/cloud-dev"
                     className="text-white hover:text-[#FF6B35]"
                   >
-                    Game Development
+                    Cloud and DevOps
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/services/blockchain-dev"
+                    className="text-white hover:text-[#FF6B35]"
+                  >
+                    Emerging Technologies
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/services/graphic-dev"
+                    className="text-white hover:text-[#FF6B35]"
+                  >
+                    Creative and Design
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/services/seo-dev"
+                    className="text-white hover:text-[#FF6B35]"
+                  >
+                    Digital Marketing
                   </Link>
                 </li>
                 <li>
@@ -123,30 +152,59 @@ export const Footer = () => {
 
             {/* Craft Resources */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Industries</h3>
+              <Link
+                href=""
+                className="text-white hover:text-[#FF6B35]"
+              >
+                <h3 className="text-lg font-semibold text-white mb-3">Industries</h3>
+              </Link>
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    href="/industries/healthcare-and-life/regulatory-compliance"
+                    href="/industries/tele-development"
                     className="text-white hover:text-[#FF6B35]"
                   >
-                    Regulatory Compliance
+                    Healthcare & Life Sciences
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/industries/healthcare-and-life/regulatory-compliance"
+                    href="/industries/fintech-dev"
                     className="text-white hover:text-[#FF6B35]"
                   >
-                    Data-Driven Care
+                    Financial Services & FinTech
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/industries/healthcare-and-life/regulatory-compliance"
+                    href="/industries/Document-dev"
                     className="text-white hover:text-[#FF6B35]"
                   >
-                    Clous & DevOps
+                    Legal, Accounting & Consulting
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/industries/lms-developmeny"
+                    className="text-white hover:text-[#FF6B35]"
+                  >
+                    Education & E-Learning
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/industries/saas-product-development"
+                    className="text-white hover:text-[#FF6B35]"
+                  >
+                    Technology, SaaS & Startups
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/industries/e-governance-portals"
+                    className="text-white hover:text-[#FF6B35]"
+                  >
+                    Government & Public Sector
                   </Link>
                 </li>
               </ul>
@@ -154,23 +212,28 @@ export const Footer = () => {
 
             {/* About & Connect */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Technologies</h3>
+              <Link
+                href=""
+                className="text-white hover:text-[#FF6B35]"
+              >
+                <h3 className="text-lg font-semibold text-white mb-3">Technologies</h3>
+              </Link>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link href="/technologies/web-tech/react" className="text-white hover:text-[#FF6B35]">
-                    React
+                  <Link href="/technologies/web-development" className="text-white hover:text-[#FF6B35]">
+                    Web Technologies
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link href="/technologies/web-tech/react" className="text-white hover:text-[#FF6B35]">
                     Angular
                   </Link>
-                </li>
-                <li>
+                </li> */}
+                {/* <li>
                   <Link href="/technologies/web-tech/react" className="text-white hover:text-[#FF6B35]">
                     Node.Js
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
           </div>
@@ -194,8 +257,8 @@ export const Footer = () => {
                 placeholder="Email Address"
                 className="w-full md:w-3/4 px-4 py-2 bg-white text-black rounded-md focus:outline-none"
               />
-              <button className="w-full md:w-1/4 bg-orange-500 px-4 py-2 text-white hover:text-white font-semibold rounded-md">
-                Subscribe
+              <button className="w-full md:w-1/4 bg-[#FF6B35] space-x-1 px-4 py-2 contrast-100 text-white hover:text-white font-semibold rounded-md">
+                <Link href="/get-started">Subscribe</Link>
               </button>
             </div>
           </div>

@@ -269,7 +269,8 @@ export default function RegisterYourself({
       console.log("Updating parent with register data:", localFormData)
       onUpdate(localFormData)
     }
-  }, [localFormData, onUpdate])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localFormData])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target

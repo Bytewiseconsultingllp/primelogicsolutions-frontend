@@ -20,6 +20,7 @@ import {
   type PLSAdvantageFeatureDocument,
 } from "@/models/HomePage"
 import { getDigitalServices } from "./digital-services"
+import { serializeDocument } from "./serialize"
 
 // Update the initialHeroSlides to include buttonLink
 const initialHeroSlides = [
@@ -317,33 +318,36 @@ export async function getHomePage(): Promise<HomePageDocument | null> {
       // return createDefaultHomePage();  // Assuming createDefaultHomePage is not defined, removing this line
     }
 
-    // Get digital services
+    // Get digital services (already properly serialized)
     const digitalServices = await getDigitalServices()
 
+    // Serialize the home page document to handle ObjectIds
+    const serializedDoc = homePageDoc ? serializeDocument(homePageDoc) : null
+
     return {
-      heroSlides: homePageDoc?.heroSlides || [],
-      services: homePageDoc?.services || [],
-      itCards: homePageDoc?.itCards || [],
-      industryCards: homePageDoc?.industryCards || [],
-      technologyCards: homePageDoc?.technologyCards || [],
-      qualityServices: homePageDoc?.qualityServices || [],
-      qualityIndustry: homePageDoc?.qualityIndustry || [],
-      technologyIndustry: homePageDoc?.technologyIndustry || [],
-      qualityServiceImages: homePageDoc?.qualityServiceImages || {
+      heroSlides: serializedDoc?.heroSlides || [],
+      services: serializedDoc?.services || [],
+      itCards: serializedDoc?.itCards || [],
+      industryCards: serializedDoc?.industryCards || [],
+      technologyCards: serializedDoc?.technologyCards || [],
+      qualityServices: serializedDoc?.qualityServices || [],
+      qualityIndustry: serializedDoc?.qualityIndustry || [],
+      technologyIndustry: serializedDoc?.technologyIndustry || [],
+      qualityServiceImages: serializedDoc?.qualityServiceImages || {
         topImage: "/assets/17.png",
         bottomImage: "/assets/22.png",
       },
-      qualityIndustryImages: homePageDoc?.qualityIndustryImages || {
+      qualityIndustryImages: serializedDoc?.qualityIndustryImages || {
         topImage: "/assets/9.png",
         bottomImage: "/assets/15.png",
       },
-      technologyIndustryImages: homePageDoc?.technologyIndustryImages || {
+      technologyIndustryImages: serializedDoc?.technologyIndustryImages || {
         topImage: "/assets/6.png",
         bottomImage: "/assets/11.png",
       },
       digitalServices: digitalServices || [],
-      qualityDigitalSection: homePageDoc?.qualityDigitalSection || initialQualityDigitalSection,
-      plsAdvantage: homePageDoc?.plsAdvantage || initialPLSAdvantage,
+      qualityDigitalSection: serializedDoc?.qualityDigitalSection || initialQualityDigitalSection,
+      plsAdvantage: serializedDoc?.plsAdvantage || initialPLSAdvantage,
     }
   } catch (error) {
     console.error("Error getting home page:", error)

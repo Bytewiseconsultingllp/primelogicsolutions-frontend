@@ -680,15 +680,33 @@ export default function LegalAgreements({ data, freelancerName, onUpdate }: Lega
                 <Button
                   className="w-full mt-4"
                   disabled={
-                    !areRequiredDocumentsUploaded() ||
-                    formData.agreements.filter((a) => a.accepted).length !== formData.agreements.length ||
-                    formData.identityVerification.idType === "" ||
-                    formData.identityVerification.taxDocType === ""
+                  !areRequiredDocumentsUploaded() ||
+                  formData.agreements.filter((a) => a.accepted).length !== formData.agreements.length ||
+                  formData.identityVerification.idType === "" ||
+                  formData.identityVerification.taxDocType === ""
                   }
-                  onClick={() => {
-                    if (validateForm()) {
-                      alert("All documents submitted successfully!")
+                  onClick={async () => {
+                  if (validateForm()) {
+                    const sendFormData = async () => {
+                    try {
+                      const response = await fetch("http://localhost:8000/api/v1/freelancer/register", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(formData),
+                      })
+                      if (!response.ok) {
+                      throw new Error("Failed to submit form data")
+                      }
+                      // Optionally handle response here
+                    } catch (error) {
+                      console.error("Error submitting form data:", error)
                     }
+                    }
+                    await sendFormData()
+                    alert("All documents submitted successfully!")
+                  }
                   }}
                 >
                   Submit Documents

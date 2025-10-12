@@ -5,6 +5,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { ArrowRight, ArrowLeft, Check, Menu, X } from "lucide-react"
+import { FreelancerData } from "../page"
 
 interface Step {
   number: number
@@ -23,6 +24,7 @@ interface FreelancerRegisterLayoutProps {
   goToPreviousStep: () => void
   clearProgress: () => void
   selectionCount: string
+  formData: FreelancerData
 }
 
 export function FreelancerRegisterLayout({
@@ -35,6 +37,7 @@ export function FreelancerRegisterLayout({
   goToPreviousStep,
   clearProgress,
   selectionCount,
+  formData
 }: FreelancerRegisterLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -192,21 +195,43 @@ export function FreelancerRegisterLayout({
                 Step {currentStepIndex + 1} of {steps.length}
               </div>
 
-              <button
+                <button
                 type="button"
-                onClick={goToNextStep}
+                onClick={async () => {
+                  if (currentStepIndex === steps.length - 1) {
+                  // Call your API here
+                  try {
+                    const response = await fetch("http://localhost:8000/api/v1/freelancer/register", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+              })
+              if (!response.ok) {
+                throw new Error("Failed to submit form data")
+              }
+                    console.log("Submitting registration...");
+                  } catch (error) {
+                    // Handle error
+                    console.error("Submission failed", error);
+                  }
+                  } else {
+                  goToNextStep();
+                  }
+                }}
                 disabled={!steps[currentStepIndex]?.isValid}
                 className={`flex items-center justify-center gap-2 px-4 sm:px-6 py-2 rounded-md transition-colors ${
                   steps[currentStepIndex]?.isValid
-                    ? "bg-[#FF6B35] text-white hover:bg-[#e55a29]"
-                    : "bg-white border border-gray-300 text-gray-400 cursor-not-allowed"
+                  ? "bg-[#FF6B35] text-white hover:bg-[#e55a29]"
+                  : "bg-white border border-gray-300 text-gray-400 cursor-not-allowed"
                 }`}
-              >
+                >
                 {currentStepIndex === steps.length - 1 ? "Complete" : "Next"}
                 <ArrowRight
                   className={`w-4 h-4 ${steps[currentStepIndex]?.isValid ? "text-white" : "text-gray-400"}`}
                 />
-              </button>
+                </button>
             </div>
           </div>
         </div>

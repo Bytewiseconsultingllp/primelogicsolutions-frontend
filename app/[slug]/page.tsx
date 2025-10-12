@@ -3,14 +3,17 @@ import { getPageBySlug } from "@/lib/pages"
 import { DynamicComponent } from "@/components/dynamic-component"
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export default async function Page({ params }: PageProps) {
+  // Await the params as required by Next.js 15
+  const { slug: rawSlug } = await params
+  
   // Convert empty slug to "/" for the home page
-  const slug = params.slug === "" ? "/" : `/${params.slug}`
+  const slug = rawSlug === "" ? "/" : `/${rawSlug}`
 
   console.log("Rendering page with slug:", slug)
   const page = await getPageBySlug(slug)

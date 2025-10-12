@@ -213,6 +213,10 @@ export default function GetStartedPage() {
     },
   ])
 
+  // State for loading and error handling
+  const [isSubmittingVisitor, setIsSubmittingVisitor] = useState(false)
+  const [visitorSubmissionError, setVisitorSubmissionError] = useState<string | null>(null)
+
   // Initialize current step from localStorage or default to 0
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(() => {
     if (typeof window !== "undefined") {
@@ -306,10 +310,62 @@ export default function GetStartedPage() {
     setSidebarOpen(false)
   }, [currentStepIndex])
 
+  // Create visitor API call
+  const createVisitor = async (visitorData: RegisterYourselfData) => {
+    setIsSubmittingVisitor(true)
+    setVisitorSubmissionError(null)
+    
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/visitors', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: visitorData.fullName,
+          businessEmail: visitorData.businessEmail,
+          phoneNumber: visitorData.phoneNumber || "",
+          companyName: visitorData.companyName || "",
+          companyWebsite: visitorData.companyWebsite,
+          businessAddress: visitorData.businessAddress,
+          businessType: visitorData.businessType,
+          referralSource: visitorData.referralSource
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+      console.log('Visitor created successfully:', result)
+      return result
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+      setVisitorSubmissionError(`Failed to submit visitor data: ${errorMessage}`)
+      console.error('Error creating visitor:', error)
+      throw error
+    } finally {
+      setIsSubmittingVisitor(false)
+    }
+  }
+
   // Navigate to next step
-  const goToNextStep = () => {
+  const goToNextStep = async () => {
     if (currentStepIndex < steps.length - 1) {
       if (steps[currentStepIndex].isValid) {
+        // If we're on step 1 (index 0), call the visitor API before proceeding
+        if (currentStepIndex === 0) {
+          try {
+            await createVisitor(formData.registerYourself)
+            console.log('Visitor data submitted successfully')
+          } catch (error) {
+            console.error('Failed to submit visitor data:', error)
+            // Don't proceed to next step if API call fails
+            return
+          }
+        }
+        
         setCurrentStepIndex((prevIndex) => prevIndex + 1)
         window.scrollTo(0, 0)
       } else {
@@ -608,6 +664,28 @@ export default function GetStartedPage() {
             {/* Dynamic content based on current step */}
             <div className="flex-grow">{renderCurrentStepComponent()}</div>
 
+            {/* Error message for visitor submission */}
+            {visitorSubmissionError && currentStepIndex === 0 && (
+              <div className="px-4 sm:px-6 py-3 bg-red-50 border-l-4 border-red-400 text-red-700 text-sm">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <X className="h-5 w-5 text-red-400" />
+                  </div>
+                  <div className="ml-3">
+                    <p>{visitorSubmissionError}</p>
+                  </div>
+                  <div className="ml-auto pl-3">
+                    <button
+                      onClick={() => setVisitorSubmissionError(null)}
+                      className="text-red-400 hover:text-red-600"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Navigation */}
             <div className="flex justify-between items-center p-4 sm:p-6 bg-gray-50 border-t border-gray-200">
               {currentStepIndex > 0 ? (
@@ -631,17 +709,30 @@ export default function GetStartedPage() {
               <button
                 type="button"
                 onClick={goToNextStep}
-                disabled={!steps[currentStepIndex]?.isValid}
+                disabled={!steps[currentStepIndex]?.isValid || (currentStepIndex === 0 && isSubmittingVisitor)}
                 className={`flex items-center justify-center gap-2 px-4 sm:px-6 py-2 rounded-md transition-colors ${
-                  steps[currentStepIndex]?.isValid
+                  steps[currentStepIndex]?.isValid && !(currentStepIndex === 0 && isSubmittingVisitor)
                     ? "bg-[#FF6B35] text-white hover:bg-[#e55a29]"
                     : "bg-white border border-gray-300 text-gray-400 cursor-not-allowed"
                 }`}
               >
-                {currentStepIndex === steps.length - 1 ? "Complete" : "Next"}
-                <ArrowRight
-                  className={`w-4 h-4 ${steps[currentStepIndex]?.isValid ? "text-white" : "text-gray-400"}`}
-                />
+                {currentStepIndex === 0 && isSubmittingVisitor ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    {currentStepIndex === steps.length - 1 ? "Complete" : "Next"}
+                    <ArrowRight
+                      className={`w-4 h-4 ${
+                        steps[currentStepIndex]?.isValid && !(currentStepIndex === 0 && isSubmittingVisitor) 
+                          ? "text-white" 
+                          : "text-gray-400"
+                      }`}
+                    />
+                  </>
+                )}
               </button>
             </div>
           </div>

@@ -15,7 +15,7 @@ import ProjectQuoting from "./components/project-quoting"
 import LegalAgreements from "./components/legal-agreements"
 
 // Define interfaces for type safety
-interface FreelancerData {
+export interface FreelancerData {
   whoYouAre: {
     fullName: string
     email: string
@@ -505,7 +505,33 @@ export default function FreelancerRegisterPage() {
         )
       default:
         // Show a notification if the API is not available
-        alert("API is not available right now. Please try again later.")
+        useEffect(() => {
+          const sendFormData = async () => {
+            try {
+              const response = await fetch("http://localhost:8000/api/v1/freelancer/register", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+              })
+              if (!response.ok) {
+                throw new Error("Failed to submit form data")
+              }
+              // Optionally handle response here
+            } catch (error) {
+              console.error("Error submitting form data:", error)
+            }
+          }
+          sendFormData()
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+
+        return (
+          <div className="p-8 text-center text-red-600">
+            Unable to render this step. Form data has been sent to the server.
+          </div>
+        )
         return null
     }
   }
@@ -529,6 +555,7 @@ export default function FreelancerRegisterPage() {
       goToPreviousStep={goToPreviousStep}
       clearProgress={clearProgress}
       selectionCount={getSelectionCount()}
+      formData={formData}
     >
       {renderCurrentStepComponent()}
     </FreelancerRegisterLayout>

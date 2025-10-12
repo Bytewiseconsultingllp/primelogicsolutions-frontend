@@ -40,16 +40,16 @@ export default function Estimate({
   // Calculate costs based on selections
   const calculateCosts = () => {
     // Base costs
-    const baseServiceCost = 200
-    const baseIndustryCost = 200
-    const baseTechnologyCost = 200
-    const baseFeatureCost = 150
+    const baseServiceCost = 100
+    const baseIndustryCost = 100
+    const baseTechnologyCost = 100
+    const baseFeatureCost = 50
 
     // Calculate service costs with individual items
     const serviceItems = selectedServices.map((service, index) => {
       const cost = {
-        min: 50 + (index % 2) * 10, // Vary costs slightly for different services
-        max: 100 + (index % 2) * 20,
+        min: 10 + (index % 2) * 10, // Vary costs slightly for different services
+        max: 20 + (index % 2) * 20,
       }
       return {
         name: service.name || `Service ${index + 1}`,
@@ -66,8 +66,8 @@ export default function Estimate({
     // Calculate industry costs with individual items
     const industryItems = selectedIndustries.map((industry, index) => {
       const cost = {
-        min: 50 + (index % 3) * 20, // Vary costs slightly for different industries
-        max: 100 + (index % 3) * 40,
+        min: 10 + (index % 3) * 10, // Vary costs slightly for different industries
+        max: 20 + (index % 3) * 20,
       }
       return {
         name: industry.name || `Industry ${index + 1}`,
@@ -84,8 +84,8 @@ export default function Estimate({
     // Calculate technology costs with individual items
     const technologyItems = selectedTechnologies.map((tech, index) => {
       const cost = {
-        min: 50 + (index % 2) * 30, // Vary costs slightly for different technologies
-        max: 100 + (index % 2) * 60,
+        min: 10 + (index % 2) * 15, // Vary costs slightly for different technologies
+        max: 20 + (index % 2) * 30,
       }
       return {
         name: tech.name || `Technology ${index + 1}`,
@@ -104,8 +104,8 @@ export default function Estimate({
     const featureItems = selectedFeatures.map((feature, index) => {
       const complexity = feature.complexity || (index % 3) + 1 // Complexity 1-3
       const cost = {
-        min: 100 * complexity,
-        max: 200 * complexity,
+        min: 50 * complexity,
+        max: 100 * complexity,
       }
       return {
         name: feature.name || `Feature ${index + 1}`,
